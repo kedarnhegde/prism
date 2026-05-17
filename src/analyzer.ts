@@ -20,8 +20,6 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   
   if (userTargetBranch && allBranches.includes(userTargetBranch)) {
     targetBranch = userTargetBranch;
-  } else if (allBranches.includes('develop')) {
-    targetBranch = 'develop';
   } else if (allBranches.includes('main')) {
     targetBranch = 'main';
   } else if (allBranches.includes('master')) {
