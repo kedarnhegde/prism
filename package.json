@@ -1,0 +1,46 @@
+{
+  "name": "prism",
+  "displayName": "Prism - PR Safety Mentor",
+  "description": "AI-powered PR safety mentor for junior developers",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "prism.analyzeMyPR",
+        "title": "Prism: Analyze My PR"
+      }
+    ],
+    "configuration": {
+      "title": "Prism",
+      "properties": {
+        "prism.defaultTargetBranch": {
+          "type": "string",
+          "default": "",
+          "description": "Default branch to compare against (e.g., develop, main). Leave empty to auto-detect."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "simple-git": "^3.22.0"
+  }
+}
