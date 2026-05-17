@@ -15,9 +15,42 @@
     "commands": [
       {
         "command": "prism.analyzeMyPR",
-        "title": "Prism: Analyze My PR"
+        "title": "Prism: Analyze My PR",
+        "icon": "$(search)"
+      },
+      {
+        "command": "prism.refreshAnalysis",
+        "title": "Refresh Analysis",
+        "icon": "$(refresh)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "prism-sidebar",
+          "title": "Prism PR Safety",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "views": {
+      "prism-sidebar": [
+        {
+          "id": "prism.analysisView",
+          "name": "PR Analysis",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "prism.refreshAnalysis",
+          "when": "view == prism.analysisView",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Prism",
       "properties": {
