@@ -15,7 +15,7 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   const branches = await git.branch();
   const allBranches = branches.all.map(b => b.replace('remotes/origin/', ''));
   
-  // Branch selection: user input > user config > develop > main > master
+  // Branch selection: user input > user config > main > master
   let targetBranch: string | null = null;
   
   if (userTargetBranch && allBranches.includes(userTargetBranch)) {
@@ -27,7 +27,7 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   }
   
   if (!targetBranch) {
-    throw new Error('No target branch found (tried: develop, main, master)');
+    throw new Error('No target branch found (tried: main, master)');
   }
 
   if (currentBranch === targetBranch) {
