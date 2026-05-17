@@ -1,4 +1,5 @@
 import simpleGit from 'simple-git';
+import { analyzeRisks, RulesResult } from './rules';
 
 interface AnalysisResult {
   totalFiles: number;
@@ -6,6 +7,7 @@ interface AnalysisResult {
   summary: string;
   currentBranch: string;
   targetBranch: string;
+  risks: RulesResult;
 }
 
 export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string): Promise<AnalysisResult> {
@@ -43,13 +45,15 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
 
   const categorized = categorizeFiles(changedFiles);
   const summary = generateSummary(changedFiles, categorized);
+  const risks = analyzeRisks(categorized, changedFiles.length);
 
   return {
     totalFiles: changedFiles.length,
     categorizedFiles: categorized,
     summary,
     currentBranch,
-    targetBranch
+    targetBranch,
+    risks
   };
 }
 

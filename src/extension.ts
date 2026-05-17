@@ -46,6 +46,11 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function getWebviewContent(result: any): string {
+  const riskColor = result.risks.riskLevel === 'high' ? '#f85149' : 
+                    result.risks.riskLevel === 'medium' ? '#d29922' : '#3fb950';
+  const riskEmoji = result.risks.riskLevel === 'high' ? '🔴' : 
+                    result.risks.riskLevel === 'medium' ? '🟡' : '🟢';
+
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -79,6 +84,30 @@ function getWebviewContent(result: any): string {
       font-size: 0.9em;
       margin-bottom: 15px;
     }
+    .risk-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 0.9em;
+      background: ${riskColor};
+      color: white;
+    }
+    .warning {
+      background: var(--vscode-inputValidation-warningBackground);
+      border-left: 4px solid var(--vscode-inputValidation-warningBorder);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .warning-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .no-warnings {
+      color: var(--vscode-testing-iconPassed);
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -86,6 +115,23 @@ function getWebviewContent(result: any): string {
   
   <div class="branch-info">
     Comparing <strong>${result.currentBranch}</strong> against <strong>${result.targetBranch}</strong>
+  </div>
+
+  <div class="section">
+    <h2>Risk Level: ${riskEmoji} <span class="risk-badge">${result.risks.riskLevel.toUpperCase()}</span></h2>
+  </div>
+
+  <div class="section">
+    <h2>Warnings</h2>
+    ${result.risks.warnings.length === 0 ? 
+      '<p class="no-warnings">✓ No issues detected. Your PR looks good!</p>' :
+      result.risks.warnings.map((w: any) => `
+        <div class="warning">
+          <div class="warning-title">${w.title}</div>
+          <div>${w.message}</div>
+        </div>
+      `).join('')
+    }
   </div>
 
   <div class="section">
