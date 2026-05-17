@@ -51,7 +51,7 @@ export function generateChecklist(
   
   if (hasUIChanges) {
     checklist.push({
-      text: 'Add screenshots or video of UI changes to PR description',
+      text: 'Test UI changes in different browsers/screen sizes',
       priority: 'recommended'
     });
   }
@@ -80,16 +80,9 @@ export function generateChecklist(
   }
 
   checklist.push({
-    text: 'Write a clear PR title and description',
+    text: 'Double-check you\'re not pushing secrets or API keys',
     priority: 'required'
   });
-
-  if (risks.riskLevel === 'high') {
-    checklist.push({
-      text: 'Mention high-risk changes in PR description',
-      priority: 'required'
-    });
-  }
 
   return checklist;
 }

@@ -1,6 +1,7 @@
 import simpleGit from 'simple-git';
 import { analyzeRisks, RulesResult } from './rules';
 import { generateChecklist, ChecklistItem } from './checklist';
+import { scanForSecrets } from './secrets';
 
 interface AnalysisResult {
   totalFiles: number;
@@ -38,6 +39,7 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
     throw new Error(`You're on ${targetBranch}. Switch to a feature branch first.`);
   }
 
+  // Get diff between current branch and target
   const diff = await git.diff([`${targetBranch}...HEAD`, '--name-only']);
   const changedFiles = diff.split('\n').filter(f => f.trim());
 
@@ -45,9 +47,13 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
     throw new Error(`No changes found between ${currentBranch} and ${targetBranch}. Make sure you've committed your changes.`);
   }
 
+  // Get full diff with content for secrets scanning
+  const fullDiff = await git.diff([`${targetBranch}...HEAD`]);
+  const secrets = await scanForSecrets(repoPath, fullDiff);
+
   const categorized = categorizeFiles(changedFiles);
   const summary = generateSummary(changedFiles, categorized);
-  const risks = analyzeRisks(categorized, changedFiles.length);
+  const risks = analyzeRisks(categorized, changedFiles.length, changedFiles, secrets);
   const checklist = generateChecklist(categorized, risks);
 
   return {

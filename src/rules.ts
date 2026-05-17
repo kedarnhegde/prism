@@ -1,3 +1,5 @@
+import { SecretMatch } from './secrets';
+
 export interface Warning {
   level: 'low' | 'medium' | 'high';
   title: string;
@@ -11,9 +13,21 @@ export interface RulesResult {
 
 export function analyzeRisks(
   categorizedFiles: Record<string, string[]>,
-  totalFiles: number
+  totalFiles: number,
+  allChangedFiles: string[],
+  secrets: SecretMatch[]
 ): RulesResult {
   const warnings: Warning[] = [];
+
+  // Rule 0: Secrets detected (CRITICAL)
+  if (secrets.length > 0) {
+    const secretTypes = [...new Set(secrets.map(s => s.type))].join(', ');
+    warnings.push({
+      level: 'high',
+      title: '🚨 CRITICAL: Secrets detected in code',
+      message: `Found ${secrets.length} potential secret(s): ${secretTypes}. DO NOT push this. Remove secrets and use environment variables instead.`
+    });
+  }
 
   // Rule 1: Missing tests
   const hasCodeChanges = (categorizedFiles['Frontend Files']?.length || 0) > 0;
@@ -55,6 +69,19 @@ export function analyzeRisks(
       level: 'medium',
       title: 'Environment configuration changed',
       message: 'Environment files were modified. Make sure to update documentation and notify your team.'
+    });
+  }
+
+  // Rule 5: Pushing .env files (CRITICAL)
+  const actualEnvFiles = allChangedFiles.filter(f => 
+    f.match(/\.env$/) && !f.includes('.env.example')
+  );
+  
+  if (actualEnvFiles.length > 0) {
+    warnings.push({
+      level: 'high',
+      title: '⚠️ DANGER: .env file detected',
+      message: `You're about to push ${actualEnvFiles.join(', ')}. This likely contains secrets and should NOT be committed. Add it to .gitignore immediately.`
     });
   }
 
