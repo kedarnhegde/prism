@@ -25,6 +25,14 @@
           "type": "string",
           "default": "",
           "description": "Default branch to compare against (e.g., develop, main). Leave empty to auto-detect."
+        },
+        "prism.protectedBranches": {
+          "type": "array",
+          "default": ["main", "master"],
+          "description": "Branches that should not be coded on directly. Changes on these branches will trigger a rescue prompt.",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }

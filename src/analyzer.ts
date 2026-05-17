@@ -1,5 +1,6 @@
 import simpleGit from 'simple-git';
 import { analyzeRisks, RulesResult } from './rules';
+import { generateChecklist, ChecklistItem } from './checklist';
 
 interface AnalysisResult {
   totalFiles: number;
@@ -8,6 +9,7 @@ interface AnalysisResult {
   currentBranch: string;
   targetBranch: string;
   risks: RulesResult;
+  checklist: ChecklistItem[];
 }
 
 export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string): Promise<AnalysisResult> {
@@ -46,6 +48,7 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   const categorized = categorizeFiles(changedFiles);
   const summary = generateSummary(changedFiles, categorized);
   const risks = analyzeRisks(categorized, changedFiles.length);
+  const checklist = generateChecklist(categorized, risks);
 
   return {
     totalFiles: changedFiles.length,
@@ -53,7 +56,8 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
     summary,
     currentBranch,
     targetBranch,
-    risks
+    risks,
+    checklist
   };
 }
 

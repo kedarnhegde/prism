@@ -10,6 +10,15 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
+    // Check if user is on a protected branch
+    const rescueResult = await checkAndOfferRescue(workspaceFolder.uri.fsPath);
+    if (rescueResult === 'rescued') {
+      vscode.window.showInformationMessage('Changes moved to new branch! Run "Analyze My PR" again when ready.');
+      return;
+    } else if (rescueResult === 'cancelled') {
+      return;
+    }
+
     const targetBranch = await vscode.window.showInputBox({
       prompt: 'Target branch to compare against (leave empty for default)',
       placeHolder: 'e.g., feat/big-feature, develop, main'
@@ -45,11 +54,74 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
+async function checkAndOfferRescue(repoPath: string): Promise<'rescued' | 'cancelled' | 'continue'> {
+  const simpleGit = require('simple-git');
+  const git = simpleGit(repoPath);
+  
+  const currentBranch = (await git.revparse(['--abbrev-ref', 'HEAD'])).trim();
+  const config = vscode.workspace.getConfiguration('prism');
+  const protectedBranches = config.get<string[]>('protectedBranches') || ['main', 'master'];
+  
+  if (!protectedBranches.includes(currentBranch)) {
+    return 'continue';
+  }
+
+  // Check if there are uncommitted changes
+  const status = await git.status();
+  const hasChanges = status.files.length > 0;
+  
+  if (!hasChanges) {
+    return 'continue';
+  }
+
+  const choice = await vscode.window.showWarningMessage(
+    `You're coding directly on ${currentBranch}. This is risky! Want me to move your changes to a new branch?`,
+    'Yes, rescue my changes',
+    'No, I know what I\'m doing'
+  );
+
+  if (choice !== 'Yes, rescue my changes') {
+    return 'cancelled';
+  }
+
+  const newBranchName = await vscode.window.showInputBox({
+    prompt: 'Name for your new feature branch',
+    placeHolder: 'e.g., feat/my-feature, fix/bug-123',
+    validateInput: (value) => {
+      if (!value || value.trim().length === 0) {
+        return 'Branch name cannot be empty';
+      }
+      if (value.includes(' ')) {
+        return 'Branch name cannot contain spaces';
+      }
+      return null;
+    }
+  });
+
+  if (!newBranchName) {
+    return 'cancelled';
+  }
+
+  try {
+    await git.stash();
+    await git.checkoutLocalBranch(newBranchName.trim());
+    await git.stash(['pop']);
+    return 'rescued';
+  } catch (error) {
+    vscode.window.showErrorMessage(`Failed to rescue changes: ${error}`);
+    return 'cancelled';
+  }
+}
+
 function getWebviewContent(result: any): string {
   const riskColor = result.risks.riskLevel === 'high' ? '#f85149' : 
                     result.risks.riskLevel === 'medium' ? '#d29922' : '#3fb950';
   const riskEmoji = result.risks.riskLevel === 'high' ? '🔴' : 
                     result.risks.riskLevel === 'medium' ? '🟡' : '🟢';
+
+  const requiredItems = result.checklist.filter((item: any) => item.priority === 'required');
+  const recommendedItems = result.checklist.filter((item: any) => item.priority === 'recommended');
+  const optionalItems = result.checklist.filter((item: any) => item.priority === 'optional');
 
   return `<!DOCTYPE html>
 <html>
@@ -108,6 +180,32 @@ function getWebviewContent(result: any): string {
       color: var(--vscode-testing-iconPassed);
       font-weight: bold;
     }
+    .checklist {
+      background: var(--vscode-editor-background);
+      padding: 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .checklist-item {
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+    }
+    .checklist-item input {
+      margin-right: 10px;
+      margin-top: 2px;
+    }
+    .checklist-section {
+      margin-bottom: 15px;
+    }
+    .checklist-section-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--vscode-textLink-activeForeground);
+    }
+    .priority-required { color: #f85149; }
+    .priority-recommended { color: #d29922; }
+    .priority-optional { color: #8b949e; }
   </style>
 </head>
 <body>
@@ -122,7 +220,7 @@ function getWebviewContent(result: any): string {
   </div>
 
   <div class="section">
-    <h2>Warnings</h2>
+    <h2>⚠️ Warnings</h2>
     ${result.risks.warnings.length === 0 ? 
       '<p class="no-warnings">✓ No issues detected. Your PR looks good!</p>' :
       result.risks.warnings.map((w: any) => `
@@ -132,6 +230,47 @@ function getWebviewContent(result: any): string {
         </div>
       `).join('')
     }
+  </div>
+
+  <div class="section">
+    <h2>✅ Before You Push</h2>
+    <div class="checklist">
+      ${requiredItems.length > 0 ? `
+        <div class="checklist-section">
+          <div class="checklist-section-title priority-required">Required</div>
+          ${requiredItems.map((item: any) => `
+            <div class="checklist-item">
+              <input type="checkbox" />
+              <span>${item.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+      
+      ${recommendedItems.length > 0 ? `
+        <div class="checklist-section">
+          <div class="checklist-section-title priority-recommended">Recommended</div>
+          ${recommendedItems.map((item: any) => `
+            <div class="checklist-item">
+              <input type="checkbox" />
+              <span>${item.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+      
+      ${optionalItems.length > 0 ? `
+        <div class="checklist-section">
+          <div class="checklist-section-title priority-optional">Optional</div>
+          ${optionalItems.map((item: any) => `
+            <div class="checklist-item">
+              <input type="checkbox" />
+              <span>${item.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
   </div>
 
   <div class="section">
