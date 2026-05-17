@@ -206,6 +206,29 @@ function getWebviewContent(result: any): string {
     .priority-required { color: #f85149; }
     .priority-recommended { color: #d29922; }
     .priority-optional { color: #8b949e; }
+    .ai-explanation {
+      background: var(--vscode-textBlockQuote-background);
+      border-left: 4px solid var(--vscode-textLink-foreground);
+      padding: 15px;
+      border-radius: 4px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .ollama-hint {
+      background: var(--vscode-textCodeBlock-background);
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .ollama-hint code {
+      background: var(--vscode-editor-background);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .ollama-hint a {
+      color: var(--vscode-textLink-foreground);
+    }
   </style>
 </head>
 <body>
@@ -231,6 +254,23 @@ function getWebviewContent(result: any): string {
       `).join('')
     }
   </div>
+
+  ${result.aiExplanation.available && result.aiExplanation.explanation ? `
+    <div class="section">
+      <h2>🤖 AI Mentor Explanation</h2>
+      <div class="ai-explanation">
+        ${result.aiExplanation.explanation}
+      </div>
+    </div>
+  ` : ''}
+
+  ${result.aiExplanation.available === false && result.risks.warnings.length > 0 ? `
+    <div class="section">
+      <div class="ollama-hint">
+        💡 Tip: Install <a href="https://ollama.ai">Ollama</a> and run <code>ollama pull llama3.2:3b</code> to get AI-powered explanations of these warnings.
+      </div>
+    </div>
+  ` : ''}
 
   <div class="section">
     <h2>✅ Before You Push</h2>

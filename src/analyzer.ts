@@ -2,6 +2,7 @@ import simpleGit from 'simple-git';
 import { analyzeRisks, RulesResult } from './rules';
 import { generateChecklist, ChecklistItem } from './checklist';
 import { scanForSecrets } from './secrets';
+import { getOllamaExplanation, OllamaExplanation } from './ollama';
 
 interface AnalysisResult {
   totalFiles: number;
@@ -11,6 +12,7 @@ interface AnalysisResult {
   targetBranch: string;
   risks: RulesResult;
   checklist: ChecklistItem[];
+  aiExplanation: OllamaExplanation;
 }
 
 export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string): Promise<AnalysisResult> {
@@ -55,6 +57,7 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   const summary = generateSummary(changedFiles, categorized);
   const risks = analyzeRisks(categorized, changedFiles.length, changedFiles, secrets);
   const checklist = generateChecklist(categorized, risks);
+  const aiExplanation = await getOllamaExplanation(risks, categorized, changedFiles.length);
 
   return {
     totalFiles: changedFiles.length,
@@ -63,7 +66,8 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
     currentBranch,
     targetBranch,
     risks,
-    checklist
+    checklist,
+    aiExplanation
   };
 }
 
