@@ -61,7 +61,10 @@
         },
         "prism.protectedBranches": {
           "type": "array",
-          "default": ["main", "master"],
+          "default": [
+            "main",
+            "master"
+          ],
           "description": "Branches that should not be coded on directly. Changes on these branches will trigger a rescue prompt.",
           "items": {
             "type": "string"
@@ -87,6 +90,8 @@
     "typescript": "^5.3.0"
   },
   "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "js-yaml": "^4.1.1",
     "simple-git": "^3.22.0"
   }
 }

@@ -371,6 +371,67 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
     .ollama-hint a {
       color: var(--vscode-textLink-foreground);
     }
+    .preflight-list {
+      background: var(--vscode-editor-background);
+      padding: 10px;
+      border-radius: 4px;
+      margin: 8px 0;
+    }
+    .preflight-item {
+      display: flex;
+      padding: 8px;
+      margin: 4px 0;
+      border-radius: 3px;
+      background: var(--vscode-textBlockQuote-background);
+    }
+    .preflight-item.passed {
+      border-left: 3px solid var(--vscode-testing-iconPassed);
+    }
+    .preflight-item.failed {
+      border-left: 3px solid var(--vscode-testing-iconFailed);
+    }
+    .preflight-status {
+      font-size: 1.2em;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    .preflight-item.passed .preflight-status {
+      color: var(--vscode-testing-iconPassed);
+    }
+    .preflight-item.failed .preflight-status {
+      color: var(--vscode-testing-iconFailed);
+    }
+    .preflight-details {
+      flex: 1;
+    }
+    .preflight-name {
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+    .preflight-command {
+      font-family: monospace;
+      font-size: 0.8em;
+      color: var(--vscode-descriptionForeground);
+      margin-top: 2px;
+    }
+    .preflight-skip {
+      font-size: 0.8em;
+      color: var(--vscode-descriptionForeground);
+      font-style: italic;
+      margin-top: 4px;
+    }
+    .preflight-error {
+      font-size: 0.8em;
+      color: var(--vscode-testing-iconFailed);
+      margin-top: 4px;
+    }
+    code {
+      background: var(--vscode-textCodeBlock-background);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.85em;
+    }
     .file-list {
       background: var(--vscode-editor-background);
       padding: 10px;
@@ -426,6 +487,32 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       `).join('')
     }
   </div>
+
+  ${result.preflightChecks && result.preflightChecks.length > 0 ? `
+    <div class="section">
+      <h2>🚦 Pre-flight Checks</h2>
+      <div class="preflight-list">
+        ${result.preflightChecks.map((check: any) => `
+          <div class="preflight-item ${check.passed ? 'passed' : 'failed'}">
+            <div class="preflight-status">${check.passed ? '✓' : '✗'}</div>
+            <div class="preflight-details">
+              <div class="preflight-name">${check.name}</div>
+              <div class="preflight-command">${check.command}</div>
+              ${check.skipped ? `<div class="preflight-skip">${check.skipReason}</div>` : ''}
+              ${check.error ? `<div class="preflight-error">${check.error}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : `
+    <div class="section">
+      <h2>🚦 Pre-flight Checks</h2>
+      <p style="font-size: 0.9em; color: var(--vscode-descriptionForeground);">
+        No CI/CD configuration found. Add <code>.github/workflows/*.yml</code>, <code>.circleci/config.yml</code>, or <code>.gitlab-ci.yml</code> to enable automated checks.
+      </p>
+    </div>
+  `}
 
   ${result.aiExplanation.available && result.aiExplanation.explanation ? `
     <div class="section">

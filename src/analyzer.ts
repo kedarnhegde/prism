@@ -3,6 +3,8 @@ import { analyzeRisks, RulesResult } from './rules';
 import { generateChecklist, ChecklistItem } from './checklist';
 import { scanForSecrets } from './secrets';
 import { getOllamaExplanation, OllamaExplanation } from './ollama';
+import { detectCICommands } from './ciParser';
+import { runPreflightChecks, CheckResult } from './preflightRunner';
 
 interface AnalysisResult {
   totalFiles: number;
@@ -13,6 +15,7 @@ interface AnalysisResult {
   risks: RulesResult;
   checklist: ChecklistItem[];
   aiExplanation: OllamaExplanation;
+  preflightChecks: CheckResult[];
 }
 
 export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string): Promise<AnalysisResult> {
@@ -58,6 +61,12 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   const risks = analyzeRisks(categorized, changedFiles.length, changedFiles, secrets);
   const checklist = generateChecklist(categorized, risks);
   const aiExplanation = await getOllamaExplanation(risks, categorized, changedFiles.length);
+  
+  // Run pre-flight checks
+  const ciCommands = await detectCICommands(repoPath);
+  const preflightChecks = ciCommands.length > 0 
+    ? await runPreflightChecks(repoPath, ciCommands)
+    : [];
 
   return {
     totalFiles: changedFiles.length,
@@ -67,7 +76,8 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
     targetBranch,
     risks,
     checklist,
-    aiExplanation
+    aiExplanation,
+    preflightChecks
   };
 }
 
