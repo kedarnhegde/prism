@@ -29,6 +29,11 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
         case 'refresh':
           await this.runAnalysis(undefined);
           break;
+        case 'goBack':
+          if (this._view) {
+            this._view.webview.html = this._getInitialHtml();
+          }
+          break;
         case 'copySummary':
           if (this._analysisResult) {
             const summary = this._buildTextSummary(this._analysisResult);
@@ -263,6 +268,22 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       border-left: 4px solid var(--vscode-inputValidation-errorBorder);
       padding: 15px;
       border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .action-button {
+      background: var(--vscode-button-background);
+      color: var(--vscode-button-foreground);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .action-button:hover {
+      background: var(--vscode-button-hoverBackground);
     }
   </style>
 </head>
@@ -271,6 +292,13 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
     <h3>❌ Analysis Failed</h3>
     <p>${error}</p>
   </div>
+  <button class="action-button" onclick="goBack()">← Back to Home</button>
+  <script>
+    const vscode = acquireVsCodeApi();
+    function goBack() {
+      vscode.postMessage({ type: 'goBack' });
+    }
+  </script>
 </body>
 </html>`;
   }
@@ -414,6 +442,10 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
     .preflight-item.failed {
       border-left: 3px solid var(--vscode-testing-iconFailed);
     }
+    .preflight-item.skipped {
+      border-left: 3px solid var(--vscode-descriptionForeground);
+      opacity: 0.7;
+    }
     .preflight-status {
       font-size: 1.2em;
       margin-right: 10px;
@@ -522,8 +554,8 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       <h2>🚦 Pre-flight Checks</h2>
       <div class="preflight-list">
         ${result.preflightChecks.map((check: any) => `
-          <div class="preflight-item ${check.passed ? 'passed' : 'failed'}">
-            <div class="preflight-status">${check.passed ? '✓' : '✗'}</div>
+          <div class="preflight-item ${check.skipped ? 'skipped' : (check.passed ? 'passed' : 'failed')}">
+            <div class="preflight-status">${check.skipped ? '⏸' : (check.passed ? '✓' : '✗')}</div>
             <div class="preflight-details">
               <div class="preflight-name">${check.name}</div>
               <div class="preflight-command">${check.command}</div>
@@ -534,14 +566,7 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
         `).join('')}
       </div>
     </div>
-  ` : `
-    <div class="section">
-      <h2>🚦 Pre-flight Checks</h2>
-      <p style="font-size: 0.9em; color: var(--vscode-descriptionForeground);">
-        No CI/CD configuration found. Add <code>.github/workflows/*.yml</code>, <code>.circleci/config.yml</code>, or <code>.gitlab-ci.yml</code> to enable automated checks.
-      </p>
-    </div>
-  `}
+  ` : ''}
 
   ${result.aiExplanation.available && result.aiExplanation.explanation ? `
     <div class="section">

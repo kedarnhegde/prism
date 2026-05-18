@@ -36,16 +36,24 @@ export async function runPreflightChecks(
         output: stdout || stderr
       });
     } catch (error: any) {
-      // Check if command not found
-      if (error.code === 127 || error.message.includes('command not found')) {
+      // Only skip if the script literally doesn't exist in package.json
+      // npm returns specific error for missing scripts
+      const errorText = String(error.stderr || error.message || '');
+      const isScriptMissing = 
+        errorText.includes('missing script:') ||
+        errorText.includes('Unknown command') ||
+        error.code === 'ENOENT';
+
+      if (isScriptMissing) {
         results.push({
           name: cmd.name,
           command: cmd.command,
-          passed: false,
+          passed: true,
           skipped: true,
-          skipReason: 'Command not available locally'
+          skipReason: 'Not configured in your project'
         });
       } else {
+        // Command ran but failed - this is what we want to show
         results.push({
           name: cmd.name,
           command: cmd.command,

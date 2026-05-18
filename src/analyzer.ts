@@ -63,10 +63,12 @@ export async function analyzeGitDiff(repoPath: string, userTargetBranch?: string
   const aiExplanation = await getOllamaExplanation(risks, categorized, changedFiles.length);
   
   // Run pre-flight checks
-  const ciCommands = await detectCICommands(repoPath);
-  const preflightChecks = ciCommands.length > 0 
-    ? await runPreflightChecks(repoPath, ciCommands)
-    : [];
+  const preflightChecks: CheckResult[] = [];
+  // Disabled: unreliable due to PATH issues in VS Code extension environment
+  // const ciCommands = await detectCICommands(repoPath);
+  // const preflightChecks = ciCommands.length > 0 
+  //   ? await runPreflightChecks(repoPath, ciCommands)
+  //   : [];
 
   return {
     totalFiles: changedFiles.length,

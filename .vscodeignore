@@ -9,7 +9,6 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 !out/**/*.js
-node_modules/**
 .DS_Store
 *.vsix
 CONTRIBUTING.md
