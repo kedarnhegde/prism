@@ -19,12 +19,6 @@ https://github.com/user-attachments/assets/d8cc9fe6-fb43-4d01-93ea-63b6b73e72a4
 
 ## ✨ Features
 
-### 🔍 Smart PR Analysis
-Automatically analyzes your git changes and categorizes files by type (Frontend, Tests, CI/CD, Config, Documentation).
-
-<img width="396" height="387" alt="Screenshot 2026-05-18 at 12 45 48" src="https://github.com/user-attachments/assets/998368d2-6457-42d4-843c-d60be15c12d3" />
-
-
 
 ### 🚨 Risk Detection
 Identifies potential issues before they become problems:
@@ -36,6 +30,12 @@ Identifies potential issues before they become problems:
 
 <img width="399" height="516" alt="Screenshot 2026-05-18 at 12 45 23" src="https://github.com/user-attachments/assets/c6a2617f-86bc-4721-8750-83b996183ff1" />
 
+
+
+### 🔍 Smart PR Analysis
+Automatically analyzes your git changes and categorizes files by type (Frontend, Tests, CI/CD, Config, Documentation).
+
+<img width="396" height="387" alt="Screenshot 2026-05-18 at 12 45 48" src="https://github.com/user-attachments/assets/998368d2-6457-42d4-843c-d60be15c12d3" />
 
 
 ### 🛡️ Protected Branch Rescue
@@ -63,7 +63,7 @@ Connect your local Ollama instance for friendly, educational explanations of det
 
 ### Installation
 
-1. Install from VS Code Marketplace: [Link coming soon]
+1. Install from VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=prism-ai.prism-ai
 2. Or search for "Prism" in VS Code Extensions (`Cmd+Shift+X`)
 
 ### Usage
@@ -169,4 +169,4 @@ Built with ❤️ for developers who want to ship better code.
 
 ---
 
-**[⭐ Star us on GitHub](https://github.com/kedarnhegde/prism)** | **[📦 View on Marketplace](https://marketplace.visualstudio.com)**
+**[⭐ Star us on GitHub](https://github.com/kedarnhegde/prism)** | **[📦 View on Marketplace](https://marketplace.visualstudio.com/items?itemName=prism-ai.prism-ai)**
