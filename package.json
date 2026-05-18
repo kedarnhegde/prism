@@ -1,5 +1,5 @@
 {
-  "name": "prism",
+  "name": "prism-ai",
   "displayName": "Prism - PR Safety Mentor",
   "description": "Catch issues before code review. Local-first PR analysis with secrets detection, risk warnings, and smart checklists.",
   "version": "0.1.0",
