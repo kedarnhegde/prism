@@ -11,7 +11,8 @@ Prism is a local-first VS Code extension that helps developers understand the im
 ### 🔍 Smart PR Analysis
 Automatically analyzes your git changes and categorizes files by type (Frontend, Tests, CI/CD, Config, Documentation).
 
-**[Screenshot: Analysis Overview]**
+<img width="479" height="895" alt="Screenshot 2026-05-17 at 23 47 42" src="https://github.com/user-attachments/assets/b5931011-9d0a-407a-a8c2-46c79d39e110" />
+
 
 ### 🚨 Risk Detection
 Identifies potential issues before they become problems:
@@ -21,12 +22,13 @@ Identifies potential issues before they become problems:
 - **Large PRs** - Suggests splitting oversized pull requests
 - **Environment Files** - Prevents accidental commits of `.env` files
 
-**[Screenshot: Risk Warnings]**
+<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
+
 
 ### 🛡️ Protected Branch Rescue
 Accidentally coding on `main` or `master`? Prism detects this and offers to safely move your changes to a new feature branch.
 
-**[Screenshot: Branch Rescue Dialog]**
+Screenshot
 
 ### ✅ Smart Checklist
 Get a personalized pre-push checklist based on your changes:
@@ -34,7 +36,7 @@ Get a personalized pre-push checklist based on your changes:
 - **Recommended** - Best practices for your specific changes
 - **Optional** - Nice-to-have improvements
 
-**[Screenshot: Checklist]**
+<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
 
 ### 🚦 Pre-flight Checks
 Automatically detects and runs CI/CD commands locally before you push:
@@ -42,12 +44,12 @@ Automatically detects and runs CI/CD commands locally before you push:
 - Runs tests, linters, and build commands
 - Shows pass/fail status for each check
 
-**[Screenshot: Pre-flight Checks]**
+<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
 
 ### 🤖 AI-Powered Explanations (Optional)
 Connect your local Ollama instance for friendly, educational explanations of detected issues. No data leaves your machine.
 
-**[Screenshot: AI Explanation]**
+<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
 
 ## 🚀 Getting Started
 
