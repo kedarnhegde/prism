@@ -24,7 +24,10 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case 'analyze':
-          await this.runAnalysis();
+          await this.runAnalysis(data.targetBranch);
+          break;
+        case 'refresh':
+          await this.runAnalysis(undefined);
           break;
         case 'copySummary':
           if (this._analysisResult) {
@@ -37,7 +40,7 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public async runAnalysis() {
+  public async runAnalysis(targetBranch?: string) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
     
     if (!workspaceFolder) {
@@ -58,18 +61,6 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       }
       return;
     } else if (rescueResult === 'cancelled') {
-      if (this._view) {
-        this._view.webview.html = this._getInitialHtml();
-      }
-      return;
-    }
-
-    const targetBranch = await vscode.window.showInputBox({
-      prompt: 'Target branch to compare against (leave empty for default)',
-      placeHolder: 'e.g., feat/big-feature, develop, main'
-    });
-
-    if (targetBranch === undefined) {
       if (this._view) {
         this._view.webview.html = this._getInitialHtml();
       }
@@ -175,15 +166,39 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       line-height: 1.6;
       margin-bottom: 20px;
     }
+    .input-group {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      color: var(--vscode-descriptionForeground);
+    }
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--vscode-input-border);
+      border-radius: 3px;
+      font-family: var(--vscode-font-family);
+      font-size: 0.9em;
+    }
+    .input-group input:focus {
+      outline: 1px solid var(--vscode-focusBorder);
+    }
     .action-button {
       background: var(--vscode-button-background);
       color: var(--vscode-button-foreground);
       border: none;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 1em;
       font-weight: bold;
+      width: 100%;
     }
     .action-button:hover {
       background: var(--vscode-button-hoverBackground);
@@ -194,12 +209,19 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
   <div class="empty-state">
     <h2>🛡️ Prism PR Safety</h2>
     <p>Check your changes before pushing to catch issues early.</p>
+    
+    <div class="input-group">
+      <label for="targetBranch">Target Branch (optional)</label>
+      <input type="text" id="targetBranch" placeholder="main" />
+    </div>
+    
     <button class="action-button" onclick="analyze()">🔍 Analyze My PR</button>
   </div>
   <script>
     const vscode = acquireVsCodeApi();
     function analyze() {
-      vscode.postMessage({ type: 'analyze' });
+      const targetBranch = document.getElementById('targetBranch').value.trim();
+      vscode.postMessage({ type: 'analyze', targetBranch: targetBranch || undefined });
     }
   </script>
 </body>
@@ -269,36 +291,38 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
   <style>
     body { 
       font-family: var(--vscode-font-family); 
-      padding: 15px;
+      padding: 16px;
       color: var(--vscode-foreground);
     }
     h2 { 
       color: var(--vscode-textLink-foreground);
       font-size: 1.1em;
-      margin-top: 20px;
-      margin-bottom: 10px;
+      margin-top: 24px;
+      margin-bottom: 12px;
     }
     h3 {
       font-size: 1em;
-      margin-top: 15px;
-      margin-bottom: 8px;
+      margin-top: 16px;
+      margin-bottom: 10px;
     }
-    .section { margin: 15px 0; }
+    .section { margin: 20px 0; }
     .branch-info {
       background: var(--vscode-textBlockQuote-background);
-      padding: 8px 10px;
+      padding: 10px 12px;
       border-radius: 4px;
       font-size: 0.85em;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      border-left: 3px solid var(--vscode-textLink-foreground);
     }
     .risk-badge {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 10px;
+      padding: 4px 14px;
+      border-radius: 12px;
       font-weight: bold;
-      font-size: 0.85em;
+      font-size: 0.9em;
       background: ${riskColor};
       color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .warning {
       background: var(--vscode-inputValidation-warningBackground);
@@ -455,14 +479,19 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
       background: var(--vscode-button-background);
       color: var(--vscode-button-foreground);
       border: none;
-      padding: 8px 16px;
+      padding: 10px 18px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.9em;
-      margin-top: 10px;
+      font-size: 0.95em;
+      margin-top: 12px;
+      font-weight: 600;
+      transition: background 0.2s;
     }
     .action-button:hover {
       background: var(--vscode-button-hoverBackground);
+    }
+    .action-button:active {
+      transform: translateY(1px);
     }
   </style>
 </head>
@@ -590,12 +619,17 @@ export class PrismSidebarProvider implements vscode.WebviewViewProvider {
   </div>
 
   <button class="action-button" onclick="copySummary()">📋 Copy Summary</button>
+  <button class="action-button" onclick="refresh()" style="margin-top: 8px;">🔄 Refresh Analysis</button>
 
   <script>
     const vscode = acquireVsCodeApi();
     
     function copySummary() {
       vscode.postMessage({ type: 'copySummary' });
+    }
+    
+    function refresh() {
+      vscode.postMessage({ type: 'refresh' });
     }
   </script>
 </body>
