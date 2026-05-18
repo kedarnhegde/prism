@@ -29,7 +29,7 @@
         {
           "id": "prism-sidebar",
           "title": "Prism PR Safety",
-          "icon": "$(shield)"
+          "icon": "resources/icon.png"
         }
       ]
     },
@@ -38,18 +38,13 @@
         {
           "id": "prism.analysisView",
           "name": "PR Analysis",
-          "type": "webview"
+          "type": "webview",
+          "icon": ""
         }
       ]
     },
     "menus": {
-      "view/title": [
-        {
-          "command": "prism.refreshAnalysis",
-          "when": "view == prism.analysisView",
-          "group": "navigation"
-        }
-      ]
+      "view/title": []
     },
     "configuration": {
       "title": "Prism",
