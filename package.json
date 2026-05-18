@@ -42,7 +42,9 @@
     "Linters",
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onView:prism.analysisView"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
