@@ -1,17 +1,27 @@
 # Prism - PR Safety Mentor
 
-> Your AI-powered safety net for pull requests. Catch issues before they reach code review.
+Your AI-powered safety net for pull requests. Catch issues before they reach code review.
 
 ![Prism Logo](resources/logo.png)
 
 Prism is a local-first VS Code extension that helps developers understand the impact of their changes before pushing code. Think of it as a friendly mentor that reviews your PR and gives you actionable feedback.
+
+## DEMO
+
+
+
+https://github.com/user-attachments/assets/d8cc9fe6-fb43-4d01-93ea-63b6b73e72a4
+
+
+
 
 ## ✨ Features
 
 ### 🔍 Smart PR Analysis
 Automatically analyzes your git changes and categorizes files by type (Frontend, Tests, CI/CD, Config, Documentation).
 
-<img width="479" height="895" alt="Screenshot 2026-05-17 at 23 47 42" src="https://github.com/user-attachments/assets/b5931011-9d0a-407a-a8c2-46c79d39e110" />
+<img width="396" height="387" alt="Screenshot 2026-05-18 at 12 45 48" src="https://github.com/user-attachments/assets/998368d2-6457-42d4-843c-d60be15c12d3" />
+
 
 
 ### 🚨 Risk Detection
@@ -22,13 +32,15 @@ Identifies potential issues before they become problems:
 - **Large PRs** - Suggests splitting oversized pull requests
 - **Environment Files** - Prevents accidental commits of `.env` files
 
-<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
+<img width="399" height="516" alt="Screenshot 2026-05-18 at 12 45 23" src="https://github.com/user-attachments/assets/c6a2617f-86bc-4721-8750-83b996183ff1" />
+
 
 
 ### 🛡️ Protected Branch Rescue
 Accidentally coding on `main` or `master`? Prism detects this and offers to safely move your changes to a new feature branch.
 
-Screenshot
+<img width="383" height="341" alt="Screenshot 2026-05-18 at 12 46 38" src="https://github.com/user-attachments/assets/fff075ae-8ef6-4579-97b1-9c22168b1392" />
+
 
 ### ✅ Smart Checklist
 Get a personalized pre-push checklist based on your changes:
@@ -36,20 +48,14 @@ Get a personalized pre-push checklist based on your changes:
 - **Recommended** - Best practices for your specific changes
 - **Optional** - Nice-to-have improvements
 
-<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
+<img width="396" height="405" alt="Screenshot 2026-05-18 at 12 45 38" src="https://github.com/user-attachments/assets/0d56b6e6-c1c2-4105-a6ef-e2619bccabb0" />
 
-### 🚦 Pre-flight Checks
-Automatically detects and runs CI/CD commands locally before you push:
-- Parses GitHub Actions, CircleCI, and GitLab CI configs
-- Runs tests, linters, and build commands
-- Shows pass/fail status for each check
 
-<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
-
-### 🤖 AI-Powered Explanations (Optional)
+### 🤖 AI-Powered Explanations
 Connect your local Ollama instance for friendly, educational explanations of detected issues. No data leaves your machine.
 
-<img width="479" height="902" alt="Screenshot 2026-05-17 at 23 47 54" src="https://github.com/user-attachments/assets/6c9fd05c-f1db-4076-9765-884fba081cc4" />
+<img width="399" height="516" alt="Screenshot 2026-05-18 at 12 45 23" src="https://github.com/user-attachments/assets/56e2af91-3446-4ecc-8e22-c203a797f0ac" />
+
 
 ## 🚀 Getting Started
 
