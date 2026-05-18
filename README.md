@@ -145,8 +145,8 @@ That's it! Prism will automatically detect Ollama and provide AI-powered insight
 
 ## 💬 Feedback & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/prism/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/yourusername/prism/discussions)
+- **Issues**: [GitHub Issues](https://github.com/kedarnhegde/prism/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/kedarnhegde/prism/discussions)
 - **Questions**: Open an issue with the "question" label
 
 ## 📄 License
@@ -159,4 +159,4 @@ Built with ❤️ for developers who want to ship better code.
 
 ---
 
-**[⭐ Star us on GitHub](https://github.com/yourusername/prism)** | **[📦 View on Marketplace](https://marketplace.visualstudio.com)**
+**[⭐ Star us on GitHub](https://github.com/kedarnhegde/prism)** | **[📦 View on Marketplace](https://marketplace.visualstudio.com)**

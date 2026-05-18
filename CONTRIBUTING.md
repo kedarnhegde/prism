@@ -54,7 +54,7 @@ sidebar.ts renders results in webview
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/prism.git
+git clone https://github.com/kedarnhegde/prism.git
 cd prism
 
 # Install dependencies

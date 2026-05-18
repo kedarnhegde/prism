@@ -1,0 +1,11 @@
+.vscode
+.vscode-test
+src
+.gitignore
+tsconfig.json
+*.vsix
+.DS_Store
+CONTRIBUTING.md
+CHANGES.md
+PRE_PUBLISH_CHECKLIST.md
+screenshots

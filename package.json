@@ -1,12 +1,45 @@
 {
   "name": "prism",
   "displayName": "Prism - PR Safety Mentor",
-  "description": "AI-powered PR safety mentor for junior developers",
+  "description": "Catch issues before code review. Local-first PR analysis with secrets detection, risk warnings, and smart checklists.",
   "version": "0.1.0",
+  "publisher": "prism-ai",
+  "author": {
+    "name": "Kedar Hegde"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kedarnhegde/prism"
+  },
+  "bugs": {
+    "url": "https://github.com/kedarnhegde/prism/issues"
+  },
+  "homepage": "https://github.com/kedarnhegde/prism#readme",
+  "keywords": [
+    "git",
+    "pull request",
+    "pr",
+    "code review",
+    "security",
+    "secrets detection",
+    "ci/cd",
+    "testing",
+    "quality",
+    "mentor",
+    "junior developer",
+    "best practices"
+  ],
+  "icon": "resources/logo.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Linters",
     "Other"
   ],
   "activationEvents": [],
