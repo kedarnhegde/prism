@@ -1,10 +1,12 @@
 # Prism - PR Safety Mentor
 
-Your AI-powered safety net for pull requests. Catch issues before they reach code review.
-
-![Prism Logo](resources/logo.png)
+### Your AI-powered safety net for pull requests. Catch issues before they reach code review.
 
 Prism is a local-first VS Code extension that helps developers understand the impact of their changes before pushing code. Think of it as a friendly mentor that reviews your PR and gives you actionable feedback.
+
+## Live Link
+
+https://marketplace.visualstudio.com/items?itemName=prism-ai.prism-ai
 
 ## DEMO
 
